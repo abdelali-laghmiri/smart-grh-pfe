@@ -139,5 +139,43 @@ Les échanges entre le frontend et le backend se font via une API (REST).
 - **Base de données** : MySQL
 - **Authentification & rôles** : Django Auth (Employé / RH / Admin)
 - **Outils** : Git & GitHub
+## 8. Roadmap (planification)
+
+L’objectif est d’aboutir à une version finale en 7 mois avec une moyenne de ~2h de travail par jour.
+
+### Mois 1 : Analyse & Conception
+- Finaliser le cahier des charges (périmètre, objectifs).
+- UML de base (Use Case + workflows principaux).
+- Modèle de données (entités principales).
+
+### Mois 2 : Mise en place du projet
+- Initialisation Django + configuration MySQL.
+- Authentification + rôles (Employé / RH / Admin).
+- Module employés (CRUD de base).
+
+### Mois 3 : Congés (demandes) + validation
+- Soumission de demandes de congé (Employé).
+- Traitement/validation (RH).
+- Statuts + historique + archivage.
+
+### Mois 4 : Pointage + correction
+- Pointage entrée/sortie.
+- Calcul retards/absences.
+- Demande de correction de pointage + validation.
+
+### Mois 5 : Automatisation
+- Pré-contrôle automatique des demandes.
+- Notifications/rappels.
+- Alertes (retards fréquents, absences).
+
+### Mois 6 : Performance + Dashboard
+- Indicateurs de performance basés sur la présence et la ponctualité.
+- Évaluation qualitative RH.
+- Tableau de bord (KPIs RH).
+
+### Mois 7 : Tests, documentation et soutenance
+- Tests fonctionnels (scénarios réels).
+- Stabilisation (bugfix).
+- Rapport final + captures + préparation de la démo.
 
 
