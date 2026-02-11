@@ -124,3 +124,19 @@ Contrairement à un système classique purement manuel, cette application intèg
 - Générer des alertes en cas d’anomalies (retards fréquents, absences répétées).
 
 Cette automatisation vise à réduire les erreurs humaines, accélérer le traitement des demandes et améliorer l’efficacité globale du service RH.
+## 7. Architecture (vue globale)
+
+L’application suit une architecture en couches (3-tiers) :
+
+- **Frontend** : interface utilisateur (Employé / RH / Admin).
+- **Backend** : API et logique métier (règles RH, workflows, automatisation).
+- **Base de données** : stockage des employés, demandes, pointage, performance et historique.
+
+Les échanges entre le frontend et le backend se font via une API (REST).
+### Technologies
+
+- **Backend & Frontend** : Django (Python) avec templates (architecture MVC)
+- **Base de données** : PostgreSQL (ou MySQL)
+- **Authentification & rôles** : Django Auth (Employé / RH / Admin)
+- **Outils** : Git & GitHub
+
