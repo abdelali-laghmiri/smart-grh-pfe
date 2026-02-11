@@ -56,3 +56,27 @@ Les fonctionnalités suivantes ne sont pas incluses dans la version actuelle :
 - Intelligence artificielle avancée prédictive.
 
 Ces éléments pourront faire partie des perspectives d’amélioration futures.
+
+## 4. Acteurs et rôles
+
+Le système implique trois acteurs principaux :
+
+### 👤 Employé
+- Soumettre des demandes (congé, correction de pointage, etc.).
+- Effectuer le pointage (entrée / sortie).
+- Consulter l’état de ses demandes.
+- Consulter ses indicateurs de performance.
+- Recevoir des notifications.
+
+### 🧑‍💼 Responsable RH
+- Gérer les employés.
+- Traiter et valider les demandes.
+- Suivre le pointage (retards, absences).
+- Évaluer la performance.
+- Consulter les tableaux de bord.
+
+### 🛠️ Administrateur
+- Gérer les utilisateurs et les rôles.
+- Paramétrer les types de demandes.
+- Définir les règles d’automatisation.
+- Superviser le système global.
