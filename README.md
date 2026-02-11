@@ -12,7 +12,6 @@
 ## 10. Documentation & UML
 ## 11. Comment exécuter le projet (à venir)
 ## 12. Licence (optionnel)
-#############################################################################################
 ## 1. Contexte et problématique
 
 Dans de nombreuses organisations, la gestion des ressources humaines repose encore sur des procédures manuelles ou des outils complexes et peu adaptés aux besoins réels des PME.
@@ -80,3 +79,34 @@ Le système implique trois acteurs principaux :
 - Paramétrer les types de demandes.
 - Définir les règles d’automatisation.
 - Superviser le système global.
+
+## 5. Modules fonctionnels
+
+L’application est structurée autour des modules fonctionnels suivants :
+
+### 5.1 Module Gestion des employés
+- Création et gestion des profils employés.
+- Attribution des rôles (Employé, RH, Admin).
+- Consultation des informations personnelles et professionnelles.
+
+### 5.2 Module Gestion des demandes
+- Soumission de demandes (congé, correction de pointage, etc.).
+- Workflow de validation par le responsable RH.
+- Suivi des statuts (en attente, approuvée, rejetée).
+- Archivage et historique des actions.
+
+### 5.3 Module Pointage
+- Enregistrement des entrées et sorties.
+- Calcul automatique des retards et absences.
+- Suivi global du temps de travail.
+
+### 5.4 Module Performance
+- Calcul d’indicateurs basés sur la présence et la ponctualité.
+- Attribution d’un score de performance.
+- Évaluation qualitative par le responsable RH.
+
+### 5.5 Module Automatisation
+- Pré-validation automatique des demandes.
+- Envoi de notifications et rappels.
+- Détection des anomalies (retards fréquents, absences répétées).
+- Mise à jour automatique des soldes.
