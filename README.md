@@ -110,3 +110,17 @@ L’application est structurée autour des modules fonctionnels suivants :
 - Envoi de notifications et rappels.
 - Détection des anomalies (retards fréquents, absences répétées).
 - Mise à jour automatique des soldes.
+
+## 6. Automatisation (intelligence du système)
+
+L’aspect intelligent du système repose sur l’automatisation des règles métier et des processus RH.
+
+Contrairement à un système classique purement manuel, cette application intègre des mécanismes automatiques permettant de :
+
+- Vérifier automatiquement les conditions d’une demande (solde disponible, dates valides, absence de conflit).
+- Calculer les retards et absences à partir des données de pointage.
+- Mettre à jour automatiquement les soldes de congés après validation.
+- Envoyer des notifications et rappels en cas de demandes en attente.
+- Générer des alertes en cas d’anomalies (retards fréquents, absences répétées).
+
+Cette automatisation vise à réduire les erreurs humaines, accélérer le traitement des demandes et améliorer l’efficacité globale du service RH.
