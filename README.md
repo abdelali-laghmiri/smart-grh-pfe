@@ -22,7 +22,6 @@ Les responsables RH font face à une charge administrative importante liée au t
 Le manque d’automatisation entraîne des retards, des erreurs humaines et une absence de visibilité globale sur les indicateurs RH.
 
 Ce projet vise donc à concevoir une application intelligente de gestion des ressources humaines permettant de centraliser, automatiser et simplifier les processus clés RH.
-######
 ## 2. Objectifs du projet
 
 Les objectifs principaux de cette application sont :
@@ -33,3 +32,27 @@ Les objectifs principaux de cette application sont :
 - Améliorer la traçabilité et la transparence des décisions.
 - Fournir des indicateurs et tableaux de bord pour faciliter la prise de décision.
 - Intégrer des mécanismes d’alertes et de notifications automatiques.
+## 3. Périmètre (In / Out)
+
+### Fonctionnalités incluses (In Scope)
+
+Le projet couvre les fonctionnalités suivantes :
+
+- Gestion des employés (création, modification, consultation).
+- Gestion des congés avec workflow de validation.
+- Gestion du pointage (entrée, sortie, retards, absences).
+- Système de demandes centralisé.
+- Automatisation des règles métier (pré-validation, alertes, rappels).
+- Évaluation de la performance basée sur des indicateurs objectifs.
+- Tableau de bord RH avec statistiques principales.
+
+### Fonctionnalités exclues (Out of Scope)
+
+Les fonctionnalités suivantes ne sont pas incluses dans la version actuelle :
+
+- Gestion complète de la paie (Payroll).
+- Intégration avec des systèmes externes.
+- Workflows complexes multi-niveaux avancés.
+- Intelligence artificielle avancée prédictive.
+
+Ces éléments pourront faire partie des perspectives d’amélioration futures.
