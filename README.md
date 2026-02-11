@@ -136,7 +136,8 @@ Les échanges entre le frontend et le backend se font via une API (REST).
 ### Technologies
 
 - **Backend & Frontend** : Django (Python) avec templates (architecture MVC)
-- **Base de données** : PostgreSQL (ou MySQL)
+- **Base de données** : MySQL
 - **Authentification & rôles** : Django Auth (Employé / RH / Admin)
 - **Outils** : Git & GitHub
+
 
