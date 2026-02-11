@@ -22,3 +22,14 @@ Les responsables RH font face à une charge administrative importante liée au t
 Le manque d’automatisation entraîne des retards, des erreurs humaines et une absence de visibilité globale sur les indicateurs RH.
 
 Ce projet vise donc à concevoir une application intelligente de gestion des ressources humaines permettant de centraliser, automatiser et simplifier les processus clés RH.
+######
+## 2. Objectifs du projet
+
+Les objectifs principaux de cette application sont :
+
+- Centraliser la gestion des employés au sein d’un système unique.
+- Mettre en place un système structuré de gestion des demandes (congés, corrections, etc.).
+- Automatiser les processus répétitifs afin de réduire la charge administrative des responsables RH.
+- Améliorer la traçabilité et la transparence des décisions.
+- Fournir des indicateurs et tableaux de bord pour faciliter la prise de décision.
+- Intégrer des mécanismes d’alertes et de notifications automatiques.
