@@ -177,5 +177,9 @@ L’objectif est d’aboutir à une version finale en 7 mois avec une moyenne de
 - Tests fonctionnels (scénarios réels).
 - Stabilisation (bugfix).
 - Rapport final + captures + préparation de la démo.
+**Organisation quotidienne (projet à domicile)** :
+- 60 min : développement (feature du jour)
+- 30 min : tests / corrections
+- 30 min : documentation (README/rapport) + commit Git
 
 
