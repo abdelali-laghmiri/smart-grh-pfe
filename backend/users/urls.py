@@ -2,7 +2,8 @@ from django.urls import path
 from .api import (
     DepartmentListCreateAPI, DepartmentDetailAPI,
     JobPositionListCreateAPI, JobPositionDetailAPI,
-    TeamDetailAPI, TeamListCreateAPI
+    TeamDetailAPI, TeamListCreateAPI,
+    UserProfileListCreateAPI, UserProfileDetailAPI
 )
 
 urlpatterns = [
@@ -12,4 +13,6 @@ urlpatterns = [
     path('positions/<int:pk>/', JobPositionDetailAPI.as_view()),
     path('teams/', TeamListCreateAPI.as_view()),
     path('teams/<int:pk>/', TeamDetailAPI.as_view()),
+    path('profiles/', UserProfileListCreateAPI.as_view()),
+    path('profiles/<int:pk>/', UserProfileDetailAPI.as_view()),
 ]
