@@ -141,15 +141,15 @@ This design allows:
 
 ### 🔹 Class Diagram
 
-![Class Diagram](docs/diagrams/class-diagram.png)
+![Class Diagram](uml/use_cases/CD%20-%20Smart%20GRH%20(Final%20Version).png)
 
 ### 🔹 Use Case Diagram
 
-![Use Case Diagram](docs/diagrams/use-case-diagram.png)
+![Use Case Diagram](uml/use_cases/UC%20-%20Smart%20GRH%20(Global).png)
 
 ### 🔹 Sequence Diagram
 
-![Sequence Diagram](docs/diagrams/sequence-diagram.png)
+![Sequence Diagram](uml/use_cases/SD%20-%20Request%20Workflow%20(Functional).png)
 
 *(Make sure your diagrams are stored inside the folder: docs/diagrams/)*
 
