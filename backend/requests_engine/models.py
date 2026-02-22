@@ -22,16 +22,32 @@ class ApprovalWorkflow(models.Model):
 
 # Approval Step
 class ApprovalStep(models.Model):
-    workflow = models.ForeignKey(ApprovalWorkflow, on_delete=models.CASCADE, related_name='steps')
+
+    workflow = models.ForeignKey(
+        ApprovalWorkflow,
+        on_delete=models.CASCADE,
+        related_name='steps'
+    )
+
     step_order = models.PositiveIntegerField()
-    required_position = models.ForeignKey(JobPosition, on_delete=models.CASCADE, related_name='approval_steps')
-    use_hierarchy = models.BooleanField(default=False)
-    restricted_departement = models.ForeignKey(Departement, on_delete=models.CASCADE, related_name='approval_steps', null=True, blank=True)
-    # using class meta to order the steps by step_order and to ensure that each step order is unique within a workflow
+
+    required_position = models.ForeignKey(
+        'users.JobPosition',
+        on_delete=models.CASCADE
+    )
+
+    apply_hierarchy = models.BooleanField(default=False)
+
+    restricted_department = models.ForeignKey(
+        'users.Departement',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
     class Meta:
         ordering = ['step_order']
         unique_together = ('workflow', 'step_order')
-    
     def __str__(self):
         return f"Step {self.step_order} for {self.workflow.request_type.name}"
     
