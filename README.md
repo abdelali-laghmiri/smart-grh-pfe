@@ -141,11 +141,11 @@ This design allows:
 
 ### 🔹 Class Diagram
 
-![Class Diagram](uml/use_cases/CD - Smart GRH (Final Version).png)
+![Class Diagram](uml/use_cases/CD%20-%20Smart%20GRH%20(Final%20Version).png)
 
 ### 🔹 Use Case Diagram
 
-![Use Case Diagram](uml/use_cases/UC - Smart GRH (Global).png)
+![Use Case Diagram](uml/use_cases/UC%20-%20Smart%20GRH%20(Global).png)
 
 ### 🔹 Sequence Diagram
 
