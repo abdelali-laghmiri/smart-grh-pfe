@@ -2,8 +2,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Departement, JobPosition
-from .serializers import DepartmentSerializer, JobPositionSerializer
+from .models import Departement, JobPosition, Team
+from .serializers import DepartmentSerializer, JobPositionSerializer, TeamSerializer
 
 # department API views
 class DepartmentListCreateAPI(APIView):
@@ -106,4 +106,55 @@ class JobPositionDetailAPI(APIView):
             return Response({"error": "Not found"}, status=404)
 
         position.delete()
+        return Response({"message": "Deleted"}, status=204)
+    
+# team api views 
+class TeamListCreateAPI(APIView):
+
+    def get(self, request):
+        teams = Team.objects.all()
+        serializer = TeamSerializer(teams, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = TeamSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+# TeamDetailAPI for retrieving, updating, and deleting a specific team
+class TeamDetailAPI(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Team.objects.get(pk=pk)
+        except Team.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        team = self.get_object(pk)
+        if not team:
+            return Response({"error": "Not found"}, status=404)
+
+        serializer = TeamSerializer(team)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        team = self.get_object(pk)
+        if not team:
+            return Response({"error": "Not found"}, status=404)
+
+        serializer = TeamSerializer(team, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk):
+        team = self.get_object(pk)
+        if not team:
+            return Response({"error": "Not found"}, status=404)
+
+        team.delete()
         return Response({"message": "Deleted"}, status=204)
