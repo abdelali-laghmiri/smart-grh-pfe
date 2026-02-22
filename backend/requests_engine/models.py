@@ -44,14 +44,16 @@ class Request(models.Model):
             ('REJECTED', 'Rejected'),
             ('CANCELLED', 'Cancelled'),
          ]
-    submetted_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requests')
+    submitted_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='requests')
     request_type = models.ForeignKey(RequestType, on_delete=models.CASCADE, related_name='requests')
     submission_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    cuurent_step = models.PositiveIntegerField(default=1)
+    current_step = models.PositiveIntegerField(default=1)
     cancellation_reason = models.TextField(blank=True, null=True)
+    extra_data = models.JSONField(null=True, blank=True)
+    description = models.TextField()   
     def __str__(self):
-        return f"{self.request_type.name} - {self.submetted_by.user.username}"
+        return f"{self.request_type.name} - {self.submitted_by.user.username}"
 
 # class Approval History
 class ApprovalHistory(models.Model):
