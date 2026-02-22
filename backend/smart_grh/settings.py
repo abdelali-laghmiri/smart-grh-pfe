@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'requests_engine',
+    'attendance',
 ]
 
 MIDDLEWARE = [

@@ -52,3 +52,17 @@ class Request(models.Model):
     cancellation_reason = models.TextField(blank=True, null=True)
     def __str__(self):
         return f"{self.request_type.name} - {self.submetted_by.user.username}"
+
+# class Approval History
+class ApprovalHistory(models.Model):
+    DSISION_CHOICES = [
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='history')
+    approved_by = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, related_name='approvals')
+    decision = models.CharField(max_length=20, choices=DSISION_CHOICES)
+    comment = models.TextField(blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.request} - {self.decision} by {self.approved_by.user.username if self.approved_by else 'Unknown'}"
