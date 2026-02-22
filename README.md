@@ -212,7 +212,7 @@ Managers see KPIs related to their teams.
 Employees see personal statistics.
 
 ---
-
+~
 ## 🚀 Future Improvements
 
 - Email notifications  
