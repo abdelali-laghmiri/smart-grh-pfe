@@ -151,7 +151,7 @@ This design allows:
 
 ![Sequence Diagram](uml/use_cases/SD%20-%20Request%20Workflow%20(Functional).png)
 
-*(Make sure your diagrams are stored inside the folder: docs/diagrams/)*
+
 
 ---
 
