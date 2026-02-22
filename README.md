@@ -1,185 +1,233 @@
-# Smart GRH PFE (Application intelligente de GRH)
+# 🚀 Smart GRH – Intelligent Human Resource Management System
 
-## 1. Contexte et problématique
-## 2. Objectifs du projet
-## 3. Périmètre (In/Out)
-## 4. Acteurs et rôles
-## 5. Modules fonctionnels
-## 6. Automatisation (intelligence du système)
-## 7. Architecture (vue globale)
-## 8. Roadmap (planification)
-## 9. Suivi Git (conventions de commits)
-## 10. Documentation & UML
-## 11. Comment exécuter le projet (à venir)
-## 12. Licence (optionnel)
-## 1. Contexte et problématique
+## 📌 Project Overview
 
-Dans de nombreuses organisations, la gestion des ressources humaines repose encore sur des procédures manuelles ou des outils complexes et peu adaptés aux besoins réels des PME.
+**Smart GRH** is an intelligent Human Resource Management (HRM) system developed as a Final Year Project (PFE).
 
-Les responsables RH font face à une charge administrative importante liée au traitement des demandes (congés, corrections de pointage, validations), au suivi du pointage et à l’évaluation de la performance.
+The system aims to automate and optimize HR processes within small and medium-sized enterprises (SMEs).
 
-Le manque d’automatisation entraîne des retards, des erreurs humaines et une absence de visibilité globale sur les indicateurs RH.
+It focuses on:
 
-Ce projet vise donc à concevoir une application intelligente de gestion des ressources humaines permettant de centraliser, automatiser et simplifier les processus clés RH.
-## 2. Objectifs du projet
+- Structured request management  
+- Multi-level approval workflows  
+- NFC-based attendance tracking  
+- Monthly performance evaluation  
+- Real-time HR dashboard with KPIs  
 
-Les objectifs principaux de cette application sont :
+---
 
-- Centraliser la gestion des employés au sein d’un système unique.
-- Mettre en place un système structuré de gestion des demandes (congés, corrections, etc.).
-- Automatiser les processus répétitifs afin de réduire la charge administrative des responsables RH.
-- Améliorer la traçabilité et la transparence des décisions.
-- Fournir des indicateurs et tableaux de bord pour faciliter la prise de décision.
-- Intégrer des mécanismes d’alertes et de notifications automatiques.
-## 3. Périmètre (In / Out)
+## 🎯 Project Objectives
 
-### Fonctionnalités incluses (In Scope)
+- Centralize employee management in a unified system  
+- Implement dynamic multi-level approval workflows  
+- Automate leave validation and monthly leave accrual  
+- Track attendance using NFC-based IN/OUT scanning  
+- Generate automatic monthly performance scores  
+- Provide decision-support dashboards for HR  
 
-Le projet couvre les fonctionnalités suivantes :
+---
 
-- Gestion des employés (création, modification, consultation).
-- Gestion des congés avec workflow de validation.
-- Gestion du pointage (entrée, sortie, retards, absences).
-- Système de demandes centralisé.
-- Automatisation des règles métier (pré-validation, alertes, rappels).
-- Évaluation de la performance basée sur des indicateurs objectifs.
-- Tableau de bord RH avec statistiques principales.
+## 🏗️ System Architecture
 
-### Fonctionnalités exclues (Out of Scope)
+The application follows a 3-tier architecture:
 
-Les fonctionnalités suivantes ne sont pas incluses dans la version actuelle :
+- **Frontend:** Django Templates (MVC pattern)  
+- **Backend:** Django (Business Logic + API)  
+- **Database:** MySQL  
 
-- Gestion complète de la paie (Payroll).
-- Intégration avec des systèmes externes.
-- Workflows complexes multi-niveaux avancés.
-- Intelligence artificielle avancée prédictive.
+Frontend  →  Django Backend  →  MySQL Database  
 
-Ces éléments pourront faire partie des perspectives d’amélioration futures.
+---
 
-## 4. Acteurs et rôles
+## 🧠 Core Modules
 
-Le système implique trois acteurs principaux :
+### 1️⃣ Organizational Structure
 
-### 👤 Employé
-- Soumettre des demandes (congé, correction de pointage, etc.).
-- Effectuer le pointage (entrée / sortie).
-- Consulter l’état de ses demandes.
-- Consulter ses indicateurs de performance.
-- Recevoir des notifications.
+- Departments  
+- Teams  
+- Job Positions (with hierarchy levels)  
+- Self-referencing manager hierarchy  
 
-### 🧑‍💼 Responsable RH
-- Gérer les employés.
-- Traiter et valider les demandes.
-- Suivre le pointage (retards, absences).
-- Évaluer la performance.
-- Consulter les tableaux de bord.
+Each employee has a job position, belongs to a team and department, and may have a direct manager.
 
-### 🛠️ Administrateur
-- Gérer les utilisateurs et les rôles.
-- Paramétrer les types de demandes.
-- Définir les règles d’automatisation.
-- Superviser le système global.
+---
 
-## 5. Modules fonctionnels
+### 2️⃣ Request Management Engine
 
-L’application est structurée autour des modules fonctionnels suivants :
+- Configurable request types  
+- One workflow per request type  
+- Multi-level approval  
+- Hierarchical approval (manager chain)  
+- Role-based approval (HR department)  
+- Mixed approval models  
+- Approval history tracking  
+- Employee cancellation before final approval  
 
-### 5.1 Module Gestion des employés
-- Création et gestion des profils employés.
-- Attribution des rôles (Employé, RH, Admin).
-- Consultation des informations personnelles et professionnelles.
+---
 
-### 5.2 Module Gestion des demandes
-- Soumission de demandes (congé, correction de pointage, etc.).
-- Workflow de validation par le responsable RH.
-- Suivi des statuts (en attente, approuvée, rejetée).
-- Archivage et historique des actions.
+### 3️⃣ Attendance Management
 
-### 5.3 Module Pointage
-- Enregistrement des entrées et sorties.
-- Calcul automatique des retards et absences.
-- Suivi global du temps de travail.
+- NFC-based IN / OUT scanning  
+- Automatic delay calculation  
+- One attendance record per day  
+- Late detection and reporting  
 
-### 5.4 Module Performance
-- Calcul d’indicateurs basés sur la présence et la ponctualité.
-- Attribution d’un score de performance.
-- Évaluation qualitative par le responsable RH.
+---
 
-### 5.5 Module Automatisation
-- Pré-validation automatique des demandes.
-- Envoi de notifications et rappels.
-- Détection des anomalies (retards fréquents, absences répétées).
-- Mise à jour automatique des soldes.
+### 4️⃣ Performance Module
 
-## 6. Automatisation (intelligence du système)
+- Monthly performance calculation  
+- Attendance-based automatic scoring  
+- Optional HR evaluation  
+- Final performance score generation  
 
-L’aspect intelligent du système repose sur l’automatisation des règles métier et des processus RH.
+Performance is computed using attendance indicators and optionally adjusted by HR evaluation.
 
-Contrairement à un système classique purement manuel, cette application intègre des mécanismes automatiques permettant de :
+---
 
-- Vérifier automatiquement les conditions d’une demande (solde disponible, dates valides, absence de conflit).
-- Calculer les retards et absences à partir des données de pointage.
-- Mettre à jour automatiquement les soldes de congés après validation.
-- Envoyer des notifications et rappels en cas de demandes en attente.
-- Générer des alertes en cas d’anomalies (retards fréquents, absences répétées).
+### 5️⃣ Automation Engine
 
-Cette automatisation vise à réduire les erreurs humaines, accélérer le traitement des demandes et améliorer l’efficacité globale du service RH.
-## 7. Architecture (vue globale)
+The system integrates multiple automation rules:
 
-L’application suit une architecture en couches (3-tiers) :
+- Automatic leave balance validation before approval  
+- Monthly leave accrual based on job position  
+- Dynamic approver detection  
+- Automatic notifications  
+- KPI aggregation for dashboards  
 
-- **Frontend** : interface utilisateur (Employé / RH / Admin).
-- **Backend** : API et logique métier (règles RH, workflows, automatisation).
-- **Base de données** : stockage des employés, demandes, pointage, performance et historique.
+---
 
-Les échanges entre le frontend et le backend se font via une API (REST).
-### Technologies
+## 🔄 Approval Workflow Logic
 
-- **Backend & Frontend** : Django (Python) avec templates (architecture MVC)
-- **Base de données** : MySQL
-- **Authentification & rôles** : Django Auth (Employé / RH / Admin)
-- **Outils** : Git & GitHub
-## 8. Roadmap (planification)
+Each **Request Type** is associated with:
 
-L’objectif est d’aboutir à une version finale en 7 mois avec une moyenne de ~2h de travail par jour.
+- One Approval Workflow  
+- Multiple ordered Approval Steps  
 
-### Mois 1 : Analyse & Conception
-- Finaliser le cahier des charges (périmètre, objectifs).
-- UML de base (Use Case + workflows principaux).
-- Modèle de données (entités principales).
+Each step defines:
 
-### Mois 2 : Mise en place du projet
-- Initialisation Django + configuration MySQL.
-- Authentification + rôles (Employé / RH / Admin).
-- Module employés (CRUD de base).
+- Required Job Position  
+- Whether to use hierarchy  
+- Optional department restriction  
 
-### Mois 3 : Congés (demandes) + validation
-- Soumission de demandes de congé (Employé).
-- Traitement/validation (RH).
-- Statuts + historique + archivage.
+This design allows:
 
-### Mois 4 : Pointage + correction
-- Pointage entrée/sortie.
-- Calcul retards/absences.
-- Demande de correction de pointage + validation.
+- Pure hierarchical approval  
+- Pure role-based approval  
+- Mixed approval models  
 
-### Mois 5 : Automatisation
-- Pré-contrôle automatique des demandes.
-- Notifications/rappels.
-- Alertes (retards fréquents, absences).
+---
 
-### Mois 6 : Performance + Dashboard
-- Indicateurs de performance basés sur la présence et la ponctualité.
-- Évaluation qualitative RH.
-- Tableau de bord (KPIs RH).
+## 🗂️ Main Database Entities
 
-### Mois 7 : Tests, documentation et soutenance
-- Tests fonctionnels (scénarios réels).
-- Stabilisation (bugfix).
-- Rapport final + captures + préparation de la démo.
-**Organisation quotidienne (projet à domicile)** :
-- 60 min : développement (feature du jour)
-- 30 min : tests / corrections
-- 30 min : documentation (README/rapport) + commit Git
+- User (Django built-in authentication)  
+- UserProfile  
+- Department  
+- Team  
+- JobPosition  
+- Request  
+- RequestType  
+- ApprovalWorkflow  
+- ApprovalStep  
+- ApprovalHistory  
+- Attendance  
+- Performance  
+- Notification  
+- LeaveAdjustment  
 
+---
 
+## 📊 UML Diagrams
+
+### 🔹 Class Diagram
+
+![Class Diagram](docs/diagrams/class-diagram.png)
+
+### 🔹 Use Case Diagram
+
+![Use Case Diagram](docs/diagrams/use-case-diagram.png)
+
+### 🔹 Sequence Diagram
+
+![Sequence Diagram](docs/diagrams/sequence-diagram.png)
+
+*(Make sure your diagrams are stored inside the folder: docs/diagrams/)*
+
+---
+
+## ⚙️ Technologies Used
+
+- Python 3  
+- Django  
+- MySQL  
+- HTML / CSS / Bootstrap  
+- Git & GitHub  
+
+---
+
+## 🛠️ Installation Guide
+
+1. Clone the repository  
+2. Create a virtual environment  
+3. Install dependencies  
+4. Run migrations  
+5. Start the server  
+
+### Commands
+
+git clone https://github.com/abdelali-laghmiri/smart-grh-pfe.git  
+cd smart-grh-pfe  
+python -m venv venv  
+venv\Scripts\activate   # Windows  
+pip install -r requirements.txt  
+python manage.py makemigrations  
+python manage.py migrate  
+python manage.py runserver  
+
+---
+
+## 🔐 Authentication & Roles
+
+The system uses Django Authentication with Groups:
+
+- Employee  
+- HR  
+- Admin  
+
+Permissions are managed using Django’s built-in authorization system.
+
+---
+
+## 📈 Dashboard KPIs
+
+HR Dashboard includes:
+
+- Pending Requests  
+- Monthly Approvals  
+- Late Rate  
+- Absence Rate  
+- Average Performance Score  
+
+Managers see KPIs related to their teams.  
+Employees see personal statistics.
+
+---
+
+## 🚀 Future Improvements
+
+- Email notifications  
+- Payroll integration  
+- Advanced reporting  
+- AI-based performance prediction  
+
+---
+
+## 👨‍🎓 Academic Context
+
+This project was developed as a Final Year Project (PFE), focusing on system modeling, automation logic, and scalable architecture design.
+
+---
+
+## 📄 License
+
+Academic project – for educational purposes only.
