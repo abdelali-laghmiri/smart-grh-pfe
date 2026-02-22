@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'requests_engine',
     'attendance',
     'performance',
+    'notifications',
 ]
 
 MIDDLEWARE = [
