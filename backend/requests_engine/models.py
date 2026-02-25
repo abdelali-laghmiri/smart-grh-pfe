@@ -14,7 +14,7 @@ class RequestType(models.Model):
 
 # class Approval Workflow
 class ApprovalWorkflow(models.Model):
-    request_type = models.OneToOneField(RequestType, on_delete=models.CASCADE, related_name='approval_workflow')
+    request_type = models.OneToOneField(RequestType, on_delete=models.CASCADE, related_name='workflow')
 
     def __str__(self):
         return f"Workflow for {self.request_type.name}"

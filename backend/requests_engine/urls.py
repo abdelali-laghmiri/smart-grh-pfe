@@ -1,5 +1,6 @@
 from django.urls import path
 from .api import (
+    ApproveRequestAPI,
     RequestTypeListCreateAPI,
     RequestTypeDetailAPI,
     ApprovalWorkflowListCreateAPI,
@@ -24,4 +25,6 @@ urlpatterns = [
     # API endpoints for Request
     path('requests/', RequestListCreateAPI.as_view()),
     path('requests/<int:pk>/', RequestDetailAPI.as_view()),
+    # API endpoints for approval actions
+    path('requests/<int:pk>/approve/', ApproveRequestAPI.as_view()),
 ]

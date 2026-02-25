@@ -1,10 +1,13 @@
 # API views for the requests engine
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import RequestType, ApprovalWorkflow,ApprovalStep,Request, ApprovalHistory
 from .serializers import RequestTypeSerializer, ApprovalWorkflowSerializer,ApprovalStepSerializer,RequestSerializer, ApprovalHistorySerializer
-
+from django.shortcuts import get_object_or_404
+from .services import find_hierarchical_approver
+from users.models import UserProfile
 #------- request types API views -------
 # API views for RequestType
 class RequestTypeListCreateAPI(APIView):
@@ -187,3 +190,61 @@ class RequestDetailAPI(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=400)
+    
+# ------- end of requests API views -------
+# ------- Approve Request API views -------
+
+class ApproveRequestAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+
+        req = get_object_or_404(Request, pk=pk)
+
+        #  current step
+        step = ApprovalStep.objects.get(
+            workflow=req.request_type.workflow,
+            step_order=req.current_step
+        )
+
+        employee = req.submitted_by
+        required_position = step.required_position
+
+        #  apply_hierarchy
+        if step.apply_hierarchy:
+            approver = find_hierarchical_approver(
+                employee,
+                required_position
+            )
+        else:
+            approver = UserProfile.objects.filter(
+                job_position=required_position
+            ).first()
+
+        if not approver:
+            return Response(
+                {"error": "No valid approver found"},
+                status=400
+            )
+        print("Approver found:", approver.user.username)
+        # approver
+        if request.user != approver.user:
+            return Response(
+                {"error": "You are not authorized to approve this request"},
+                status=403
+            )
+        
+        # Move to next step
+        next_step = ApprovalStep.objects.filter(
+            workflow=req.request_type.workflow,
+            step_order=req.current_step + 1
+        ).first()
+
+        if next_step:
+            req.current_step += 1
+            req.save()
+            return Response({"message": "Moved to next step"})
+        else:
+            req.status = "APPROVED"
+            req.save()
+            return Response({"message": "Request fully approved"})
