@@ -50,3 +50,5 @@ def authenticate_user(db: Session, matricule: str, password: str):
         return None
     return db_user
 
+def get_user_by_matricule(db: Session, matricule: str):
+    return db.query(User).filter(User.matricule == matricule).first()

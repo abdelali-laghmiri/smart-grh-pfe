@@ -1,3 +1,4 @@
+from typing import Any, Optional,Dict
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 
@@ -25,7 +26,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def verify_access_token(token: str):
+def verify_access_token(token: str)-> Optional[Dict[str, Any]]:
     try:
         payload = jwt.decode(
             token,
