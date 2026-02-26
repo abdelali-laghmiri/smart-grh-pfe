@@ -7,6 +7,10 @@ from .models import User,UserRole
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def get_users_by_role(db: Session, role: UserRole):
+    users = db.query(User).filter(User.role == role).all() 
+    return users
+
 def get_password_hash(password)-> str:
     return pwd_context.hash(password)
 
@@ -19,6 +23,12 @@ def create_user(
         password: str,
         role: UserRole = UserRole.USER
         ):
+    
+    if role == UserRole.SUPERUSER:
+        if get_users_by_role(db, UserRole.SUPERUSER):
+            raise ValueError("A superuser already exists.")
+    if db.query(User).filter(User.matricule == matricule).first():
+        raise ValueError("A user with this matricule already exists.")
     hashed_password = get_password_hash(password)
     db_user = User(
         matricule=matricule,
@@ -39,3 +49,4 @@ def authenticate_user(db: Session, matricule: str, password: str):
     if not verify_password(password, db_user.hashed_password):
         return None
     return db_user
+
