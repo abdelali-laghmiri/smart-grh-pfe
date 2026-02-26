@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class LoginRequest(BaseModel):
-    username: str
+    matricule: str
     password: str
 
 class TokenResponse(BaseModel):
