@@ -17,6 +17,7 @@ from db.base import Base
 
 # import models heare 
 import apps.auth.models 
+import apps.organization.models
 
 
 
