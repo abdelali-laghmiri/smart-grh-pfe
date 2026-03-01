@@ -41,8 +41,15 @@ def get_current_user(
 
     return user
 
+def require_active_user(current_user = Depends(get_current_user)):
+    if not current_user.is_active : 
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive User account",
+        )
+    return current_user
 
-def require_superuser(current_user = Depends(get_current_user)):
+def require_superuser(current_user = Depends(require_active_user)):
     if current_user.role != UserRole.SUPERUSER:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -51,10 +58,3 @@ def require_superuser(current_user = Depends(get_current_user)):
     return current_user
 
 
-def require_active_user(current_user = Depends(get_current_user)):
-    if not current_user.is_active : 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Inactive User account",
-        )
-    return current_user
