@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from apps.organization.models import JobTitle,Department
+from apps.organization.models import JobTitle,Department,Team
 from apps.organization.schemas import JobTitleCreate
 
 from apps.auth.models import User
@@ -37,7 +37,7 @@ def delete_job_title(db: Session, job_title_id: int):
     db.commit()
 
     return True
-#============================================================
+#===================================================================================================
 #=======================================Departement ================================================
 
 
@@ -70,8 +70,73 @@ def create_department(db: Session, name: str, description: str | None, manager_i
 
 def list_departments(db: Session):
     return db.query(Department).all()
+def delete_department(db: Session, department_id: int):
+    department = db.query(Department).filter(Department.id == department_id).first()
 
-#========================= end ===================
+    if not department:
+        raise ValueError("Department not found")
+
+    # 🚫 Prevent deletion if it has teams
+    if department.teams:
+        raise ValueError("Cannot delete department with existing teams")
+
+    db.delete(department)
+    db.commit()
+
+    return True
+
+#========================= end ==========================================
+#======================== start teams servises  =========================
+def create_team(
+    db: Session,
+    name: str,
+    department_id: int,
+    team_leader_id: int | None,
+):
+    # 1️⃣ check department exists
+    department = db.query(Department).filter(Department.id == department_id).first()
+    if not department:
+        raise ValueError("Department not found")
+
+    # 2️⃣ check uniqueness inside department
+    existing = (
+        db.query(Team)
+        .filter(Team.name == name, Team.department_id == department_id)
+        .first()
+    )
+    if existing:
+        raise ValueError("Team already exists in this department")
+
+    # 3️⃣ check team leader existence
+    if team_leader_id:
+        leader = db.query(User).filter(User.id == team_leader_id).first()
+        if not leader:
+            raise ValueError("Team leader not found")
+
+    team = Team(
+        name=name,
+        department_id=department_id,
+        team_leader_id=team_leader_id,
+    )
+
+    db.add(team)
+    db.commit()
+    db.refresh(team)
+
+    return team
+def list_teams(db: Session):
+    return db.query(Team).all()
+def delete_team(db: Session, team_id: int):
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise ValueError("Team not found")
+
+    db.delete(team)
+    db.commit()
+
+    return True
+#======================== end ===========================================
+
 def get_teams_by_department(db: Session, department_id: int):
     department = db.query(Department).filter(Department.id == department_id).first()
 
