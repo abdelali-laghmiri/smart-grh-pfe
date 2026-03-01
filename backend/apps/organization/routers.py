@@ -1,20 +1,37 @@
-from fastapi import APIRouter
-from apps.organization.schemas import JobTitleCreate,JobTitleResponse
-from datetime import datetime
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from apps.organization.models import JobTitle
 
-router =APIRouter(prefix="/organization",tags=["organization"])
+from db.session import get_db
+from apps.organization.schemas import JobTitleCreate, JobTitleResponse
+from apps.organization.services import create_job_title
+
+from apps.auth.dependencies import require_superuser, require_active_user
 
 
+router = APIRouter(prefix="/organization", tags=["Organization"])
 
-
-@router.post("/test-job-title", response_model=JobTitleResponse)
-def test_job_title(data: JobTitleCreate):
-    return {
-        "id": 1,
-        "title": data.title,
-        "scope": data.scope,
-        "level": data.level,
-        "description": data.description,
-        "monthly_leave_accrual": data.monthly_leave_accrual,
-        "created_at": datetime.utcnow(),
-    }
+  
+#=================== job-titles routers ==================================#
+@router.post("/job-titels",response_model=JobTitleResponse)
+def create_job_title_endpoint(
+    data: JobTitleCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_superuser),
+):
+    try:
+        job_title = create_job_title(db, data)
+        return job_title
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    
+@router.get("/job-titles", response_model=list[JobTitleResponse])
+def list_job_titles(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_active_user),
+):
+    return db.query(JobTitle).all()
+#=================== end  job-titles routers =============================#
