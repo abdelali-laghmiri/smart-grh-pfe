@@ -25,7 +25,7 @@ def main():
 
     parser.add_argument(
         "--role",
-        default="USER",
+        default="user",
         choices=["user", "superuser"],
         help="Role of the user (default: USER)",
     )

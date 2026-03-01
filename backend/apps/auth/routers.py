@@ -6,7 +6,7 @@ from apps.auth.schemas import LoginRequest,TokenResponse,UserResponse
 from apps.auth.services import authenticate_user
 from core.security import create_access_token
 
-from apps.auth.dependencies import get_current_user
+from apps.auth.dependencies import get_current_user,require_superuser
 
 
 router = APIRouter(prefix="/auth",tags=["Auth"])
@@ -31,3 +31,7 @@ def login(request:LoginRequest, db: Session = Depends(get_db)):
 @router.get("/me",response_model=UserResponse)
 def get_me(current_user = Depends(get_current_user)):
     return current_user
+
+@router.get("/admin_only")
+def admin_only(user = Depends(require_superuser)):
+    return{"message":"welcomsuper user"}

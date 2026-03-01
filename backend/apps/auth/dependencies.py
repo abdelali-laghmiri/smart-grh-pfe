@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from db.session import get_db
-from apps.auth.models import User
+from apps.auth.models import User,UserRole
 from apps.auth.services import get_user_by_matricule
 from core.security import verify_access_token
 
@@ -40,3 +40,12 @@ def get_current_user(
         )
 
     return user
+
+
+def require_superuser(current_user = Depends(get_current_user)):
+    if current_user.role != UserRole.SUPERUSER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="you do not have permission to perfom this action "
+        )
+    return current_user
