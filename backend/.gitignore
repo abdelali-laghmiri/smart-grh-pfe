@@ -1,6 +1,7 @@
 .env
 db/dev.db
 venv/
-__pycache__/
+__pycache__
 *.pyc
 .gitignore
+.vscode

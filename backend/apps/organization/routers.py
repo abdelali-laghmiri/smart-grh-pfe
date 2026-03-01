@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from apps.organization.models import JobTitle
 
 from db.session import get_db
-from apps.organization.schemas import JobTitleCreate, JobTitleResponse
-from apps.organization.services import create_job_title,delete_job_title
+from apps.organization.schemas import JobTitleCreate, JobTitleResponse,DepartmentResponse,DepartmentCreate,TeamResponse
+from apps.organization.services import create_job_title,delete_job_title,create_department,list_departments,get_teams_by_department
 
 from apps.auth.dependencies import require_superuser, require_active_user
 
@@ -49,3 +49,41 @@ def delete_job_title_endpoint(
             detail=str(e),
         )
 #=================== end  job-titles routers =============================#
+
+
+# =========================== department routers  ============================================
+@router.post("/departments", response_model=DepartmentResponse)
+def create_department_endpoint(
+    data: DepartmentCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_superuser),
+):
+    try:
+        return create_department(
+            db,
+            name=data.name,
+            description=data.description,
+            manager_id=data.manager_id,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        )
+@router.get("/departments", response_model=list[DepartmentResponse])
+def list_departments_endpoint(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_active_user),
+):
+    return list_departments(db)
+#===========================end ====================
+@router.get("/departments/{department_id}/teams", response_model=list[TeamResponse])
+def get_department_teams(
+    department_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_active_user),
+):
+    try:
+        return get_teams_by_department(db, department_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
