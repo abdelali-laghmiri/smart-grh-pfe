@@ -3,11 +3,16 @@ from  core.settings import settings
 from db.base import Base
 from db.session import engine
 
+
 # Import all the models so that they are registered with SQLAlchemy
 from apps.auth import models as auth_models
+#Import all roters 
+from apps.auth.routers import router as auth_routers
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
 
+#inclouding 
+app.include_router(auth_routers)
 # Create the database tables on startup
 @app.on_event("startup")
 def on_startup():
