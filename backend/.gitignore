@@ -5,3 +5,5 @@ __pycache__
 *.pyc
 .gitignore
 .vscode
+main.cpython-314.pyc
+.gitignore
