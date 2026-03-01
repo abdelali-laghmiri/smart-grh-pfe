@@ -8,11 +8,13 @@ from db.session import engine
 from apps.auth import models as auth_models
 #Import all roters 
 from apps.auth.routers import router as auth_routers
+from apps.organization.routers import router as orga_routers
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
 
 #inclouding 
 app.include_router(auth_routers)
+app.include_router(orga_routers)
 # Create the database tables on startup
 @app.on_event("startup")
 def on_startup():

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey, UniqueConstraint,Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
@@ -11,15 +11,19 @@ class PositionScope(str,enum.Enum):
     DEPARTMENT = "DEPARTMENT"
     GLOBAL = "GLOBAL"
 
-class JobTitel(Base):
-    __tablename__ = "job_titel"
+class JobTitle(Base):
+    __tablename__ = "job_titles"
 
-    id = Column(Integer, primary_key=True,index=True)
-    title = Column(String, unique=True,nullable=False)
-    scope = Column(Enum(PositionScope),nullable=False)
-    description = Column(String,nullable=True)
-    monthly_leave_accrual = Column(Integer,nullable=True,default=0)
-    created_at = Column(DateTime(timezone=True),server_default=func.now())
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, unique=True, nullable=False)
+    scope = Column(Enum(PositionScope), nullable=False)
+    level = Column(Integer, nullable=False)
+
+    description = Column(String, nullable=True)
+
+    monthly_leave_accrual = Column(Float, nullable=False, default=0.0)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Department(Base):
     __tablename__ = "departments"
