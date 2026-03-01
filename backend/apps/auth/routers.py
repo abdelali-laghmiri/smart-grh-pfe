@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException,status
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Depends
+
 
 from db.session import get_db
 from apps.auth.schemas import LoginRequest,TokenResponse,UserResponse
@@ -12,21 +15,27 @@ from apps.auth.dependencies import get_current_user,require_superuser
 router = APIRouter(prefix="/auth",tags=["Auth"])
 
 
-@router.post("/login",response_model=TokenResponse)
-def login(request:LoginRequest, db: Session = Depends(get_db)):
-    user = authenticate_user(db, request.matricule, request.password)
+@router.post("/login")
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    user = authenticate_user(db, form_data.username, form_data.password)
 
-    if not user :
+    if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid matricule or password",
+            status_code=401,
+            detail="Invalid credentials",
         )
-    acsses_thoken = create_access_token(
-        data={
-            "sub":user.matricule
-        }
+
+    access_token = create_access_token(
+        data={"sub": user.matricule}
     )
-    return TokenResponse(access_token=acsses_thoken)
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
 
 @router.get("/me",response_model=UserResponse)
 def get_me(current_user = Depends(get_current_user)):

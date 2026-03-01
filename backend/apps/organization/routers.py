@@ -4,7 +4,7 @@ from apps.organization.models import JobTitle
 
 from db.session import get_db
 from apps.organization.schemas import JobTitleCreate, JobTitleResponse
-from apps.organization.services import create_job_title
+from apps.organization.services import create_job_title,delete_job_title
 
 from apps.auth.dependencies import require_superuser, require_active_user
 
@@ -34,4 +34,18 @@ def list_job_titles(
     current_user = Depends(require_active_user),
 ):
     return db.query(JobTitle).all()
+@router.delete("/job-titles/{job_title_id}")
+def delete_job_title_endpoint(
+    job_title_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_superuser),
+):
+    try:
+        delete_job_title(db, job_title_id)
+        return {"message": "Job title deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
 #=================== end  job-titles routers =============================#
