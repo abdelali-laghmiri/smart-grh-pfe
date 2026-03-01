@@ -50,6 +50,8 @@ class Team(Base):
 
     department_id = Column(Integer, ForeignKey("departments.id"),nullable=False)
     team_leader_id = Column(Integer,ForeignKey("users.id"),nullable=True)
+    
+
 
     department = relationship("Department", back_populates="teams")
     team_leader = relationship(
