@@ -29,7 +29,7 @@ def create_employee(db: Session, data: EmployeeCreate):
         raise ValueError("Team not found")
 
     # 5️⃣ Ensure team belongs to department
-    if team.department_id != department.id:
+    if team.department_id != data.department_id: # type: ignore
         raise ValueError("Team does not belong to the given department")
 
     # 6️⃣ Check job title exists
