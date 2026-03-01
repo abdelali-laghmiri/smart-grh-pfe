@@ -32,7 +32,12 @@ class Department(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    manager = relationship("User")
+    manager = relationship(
+                            "User",
+                            back_populates="managed_departments",
+                            foreign_keys=[manager_id]
+                            )
+    teams = relationship("Team", back_populates="department", cascade="all, delete")
 
 class Team(Base):
     __tablename__  = "teams"
@@ -42,8 +47,12 @@ class Team(Base):
     department_id = Column(Integer, ForeignKey("departments.id"),nullable=False)
     team_leader_id = Column(Integer,ForeignKey("users.id"),nullable=True)
 
-    department = relationship("Department")
-    team_leader = relationship("User")
+    department = relationship("Department", back_populates="teams")
+    team_leader = relationship(
+    "User",
+    back_populates="led_teams",
+    foreign_keys=[team_leader_id]
+)
 
     __table_args__ = (
         UniqueConstraint("department_id", "name", name="uix_department_team"),
