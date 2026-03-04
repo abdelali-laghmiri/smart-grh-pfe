@@ -3,7 +3,7 @@ from apps.auth.models import User, UserRole
 from apps.auth.services import get_password_hash
 from apps.organization.models import Department, Team, JobTitle
 from apps.employees.models import Employee
-from apps.employees.schemas import EmployeeCreate
+from apps.employees.schemas import EmployeeCreate,EmployeeUpdate
 
 
 def create_employee(db: Session, data: EmployeeCreate):
@@ -71,3 +71,67 @@ def create_employee(db: Session, data: EmployeeCreate):
     db.refresh(employee)
 
     return employee
+
+def list_employees(db: Session, current_user: User):
+
+    # Superuser يشوف الجميع
+    if current_user.role == UserRole.SUPERUSER:  # type: ignore
+        return db.query(Employee).all()
+
+    # نجيب employee ديالو
+    current_employee = get_employee_by_user_id(db, current_user.id)  # type: ignore
+    current_level = current_employee.job_title.level
+
+    return (
+        db.query(Employee)
+        .join(JobTitle)
+        .filter(JobTitle.level < current_level)
+        .all()
+    )
+def get_employee_by_id(db: Session, employee_id: int):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not employee:
+        raise ValueError("Employee not found")
+    return employee
+
+def get_employee_by_user_id(db: Session, user_id: int):
+    employee = db.query(Employee).filter(Employee.user_id == user_id).first()
+    if not employee:
+        raise ValueError("Employee profile not found")
+    return employee
+
+def update_employee(
+    db: Session,
+    employee_id: int,
+    data: EmployeeUpdate,
+):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+
+    if not employee:
+        raise ValueError("Employee not found")
+
+    update_data = data.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(employee, key, value)
+
+    db.commit()
+    db.refresh(employee)
+
+    return employee
+def delete_employee(db: Session, employee_id: int):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+
+    if not employee:
+        raise ValueError("Employee not found")
+
+    user = db.query(User).filter(User.id == employee.user_id).first()
+
+    db.delete(employee)
+
+    if user:
+        db.delete(user)
+
+    db.commit()
+
+    return True

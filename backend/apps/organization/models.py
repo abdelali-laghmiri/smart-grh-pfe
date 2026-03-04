@@ -7,6 +7,7 @@ from apps.auth.models import User
 from db.base import Base
 
 class PositionScope(str,enum.Enum):
+     
     TEAM = "TEAM"
     DEPARTMENT = "DEPARTMENT"
     GLOBAL = "GLOBAL"

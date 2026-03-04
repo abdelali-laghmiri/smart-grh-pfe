@@ -3,13 +3,13 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     """Application settings."""
-    APP_NAME : str
-    DEBUG : bool 
-    DATABASE_URL : str
+    APP_NAME : str = "Smart GRH"
+    DEBUG : bool = False
+    DATABASE_URL : str = ""
 
-    SECRET_KEY : str
-    ALGORITHM : str
-    ACCESS_TOKEN_EXPIRE_MINUTES : int
+    SECRET_KEY : str = ""
+    ALGORITHM : str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES : int = 30
     class Config:
         env_file = ".env"
 settings = Settings()
