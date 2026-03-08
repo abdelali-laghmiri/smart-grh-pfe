@@ -19,6 +19,7 @@ from db.base import Base
 import apps.auth.models 
 import apps.organization.models
 import apps.employees.models
+import apps.permissions.models
 
 
 

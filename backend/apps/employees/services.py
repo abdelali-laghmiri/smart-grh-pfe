@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from apps.auth.models import User, UserRole
 from apps.auth.services import get_password_hash
-from apps.organization.models import Department, Team, JobTitle
+from apps.organization.models import Department, Team, JobTitle, PositionScope
 from apps.employees.models import Employee
 from apps.employees.schemas import EmployeeCreate,EmployeeUpdate
 
-
+#=========
 def create_employee(db: Session, data: EmployeeCreate):
 
     # 1️⃣ Check matricule uniqueness
@@ -71,35 +71,61 @@ def create_employee(db: Session, data: EmployeeCreate):
     db.refresh(employee)
 
     return employee
+#========
+def get_visible_employees(db: Session, current_user ):
 
-def list_employees(db: Session, current_user: User):
-
-    # Superuser يشوف الجميع
-    if current_user.role == UserRole.SUPERUSER:  # type: ignore
+    if current_user.role == UserRole.SUPERUSER:
         return db.query(Employee).all()
 
-    # نجيب employee ديالو
-    current_employee = get_employee_by_user_id(db, current_user.id)  # type: ignore
-    current_level = current_employee.job_title.level
+    current_employee = get_employee_by_user_id(db, current_user.id)
 
-    return (
-        db.query(Employee)
-        .join(JobTitle)
-        .filter(JobTitle.level < current_level)
-        .all()
-    )
-def get_employee_by_id(db: Session, employee_id: int):
+    job_title = current_employee.job_title
+    scope = job_title.scope
+    level = job_title.level
+
+    query = db.query(Employee).join(JobTitle)
+
+    query = query.filter(JobTitle.level < level)
+
+    if scope == PositionScope.GLOBAL:
+        return query.all()
+
+    if scope == PositionScope.DEPARTMENT:
+        query = query.filter(
+            Employee.department_id == current_employee.department_id
+        )
+
+    if scope == PositionScope.TEAM:
+        query = query.filter(
+            Employee.team_id == current_employee.team_id
+        )
+
+    if scope == PositionScope.NONE:
+        return [current_employee]
+
+    return query.all()
+#=========
+def list_employees(db: Session, current_user: User):
+    employees = get_visible_employees (db ,current_user)
+    return employees
+#=========
+def get_employee_by_id (db : Session ,employee_id : int, current_user : User):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not employee:
-        raise ValueError("Employee not found")
-    return employee
+        raise ValueError("Employee not found ")
+    visible_emplouiyees = get_visible_employees(db,current_user)
+    
+    if employee not in visible_emplouiyees : 
+        raise ValueError("You are not allowed to view this employee")
 
+    return employee
+#=========
 def get_employee_by_user_id(db: Session, user_id: int):
     employee = db.query(Employee).filter(Employee.user_id == user_id).first()
     if not employee:
         raise ValueError("Employee profile not found")
     return employee
-
+#=========
 def update_employee(
     db: Session,
     employee_id: int,
@@ -119,6 +145,7 @@ def update_employee(
     db.refresh(employee)
 
     return employee
+#=========
 def delete_employee(db: Session, employee_id: int):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
 
@@ -135,3 +162,8 @@ def delete_employee(db: Session, employee_id: int):
     db.commit()
 
     return True
+#=========
+
+
+
+
