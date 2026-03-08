@@ -72,12 +72,12 @@ def create_employee(db: Session, data: EmployeeCreate):
 
     return employee
 #========
-def get_visible_employees(db: Session, current_user ):
+def get_visible_employees(db: Session, current_user: User):
 
-    if current_user.role == UserRole.SUPERUSER:
-        return db.query(Employee).all()
+    if current_user.role == UserRole.SUPERUSER: # type: ignore
+        return db.query(Employee)
 
-    current_employee = get_employee_by_user_id(db, current_user.id)
+    current_employee = get_employee_by_user_id(db, current_user.id) # type: ignore
 
     job_title = current_employee.job_title
     scope = job_title.scope
@@ -88,7 +88,7 @@ def get_visible_employees(db: Session, current_user ):
     query = query.filter(JobTitle.level < level)
 
     if scope == PositionScope.GLOBAL:
-        return query.all()
+        return query
 
     if scope == PositionScope.DEPARTMENT:
         query = query.filter(
@@ -101,13 +101,26 @@ def get_visible_employees(db: Session, current_user ):
         )
 
     if scope == PositionScope.NONE:
-        return [current_employee]
+        query = query.filter(Employee.id == current_employee.id)
 
-    return query.all()
+    return query
 #=========
-def list_employees(db: Session, current_user: User):
-    employees = get_visible_employees (db ,current_user)
-    return employees
+def list_employees(
+    db: Session,
+    current_user: User,
+    department_id: int | None = None,
+    team_id: int | None = None
+):
+
+    query = get_visible_employees(db, current_user)
+
+    if department_id:
+        query = query.filter(Employee.department_id == department_id) # type: ignore
+
+    if team_id:
+        query = query.filter(Employee.team_id == team_id) # type: ignore
+
+    return query.all() # type: ignore
 #=========
 def get_employee_by_id (db : Session ,employee_id : int, current_user : User):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()

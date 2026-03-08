@@ -1,5 +1,9 @@
-from sqlalchemy.orm import Session
+import sys
+from pathlib import Path
 
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from sqlalchemy.orm import Session
 from db.session import SessionLocal
 from apps.permissions.models import Permission
 from apps.permissions.permissions_list import PERMISSIONS
