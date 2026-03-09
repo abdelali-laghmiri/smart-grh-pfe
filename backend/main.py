@@ -19,10 +19,12 @@ app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
 app.include_router(auth_routers)
 app.include_router(organization_router)
 app.include_router(em_router)
-# Create the database tables on startup
+
+# Avoid schema sync on every boot unless explicitly enabled.
 @app.on_event("startup")
 def on_startup():
-    Base.metadata.create_all(bind=engine)
+    if settings.CREATE_TABLES_ON_STARTUP:
+        Base.metadata.create_all(bind=engine)
 
 # Define a simple root endpoint
 @app.get("/")

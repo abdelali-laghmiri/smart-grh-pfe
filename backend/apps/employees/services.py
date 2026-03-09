@@ -1,47 +1,46 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+
 from apps.auth.models import User, UserRole
 from apps.auth.services import get_password_hash
-from apps.organization.models import Department, Team, JobTitle, PositionScope
 from apps.employees.models import Employee
-from apps.employees.schemas import EmployeeCreate,EmployeeUpdate
+from apps.employees.schemas import EmployeeCreate, EmployeeUpdate
+from apps.organization.models import Department, JobTitle, PositionScope, Team
 
-#=========
+EMPLOYEE_LOAD_OPTIONS = (
+    joinedload(Employee.job_title),
+    joinedload(Employee.department),
+    joinedload(Employee.team),
+    joinedload(Employee.user),
+)
+
+
 def create_employee(db: Session, data: EmployeeCreate):
-
-    # 1️⃣ Check matricule uniqueness
-    existing_user = db.query(User).filter(User.matricule == data.matricule).first()
+    existing_user = db.query(User.id).filter(User.matricule == data.matricule).first()
     if existing_user:
         raise ValueError("User with this matricule already exists")
 
-    # 2️⃣ Check email uniqueness
-    existing_email = db.query(Employee).filter(Employee.email == data.email).first()
+    existing_email = db.query(Employee.id).filter(Employee.email == data.email).first()
     if existing_email:
         raise ValueError("Employee with this email already exists")
 
-    # 3️⃣ Check department exists
-    department = db.query(Department).filter(Department.id == data.department_id).first()
-    if not department:
+    department_exists = db.query(Department.id).filter(Department.id == data.department_id).first()
+    if not department_exists:
         raise ValueError("Department not found")
 
-    # 4️⃣ Check team exists
     team = db.query(Team).filter(Team.id == data.team_id).first()
     if not team:
         raise ValueError("Team not found")
 
-    # 5️⃣ Ensure team belongs to department
-    if team.department_id != data.department_id: # type: ignore
+    if team.department_id != data.department_id:  # type: ignore
         raise ValueError("Team does not belong to the given department")
 
-    # 6️⃣ Check job title exists
-    job_title = db.query(JobTitle).filter(JobTitle.id == data.job_title_id).first()
-    if not job_title:
+    job_title_exists = db.query(JobTitle.id).filter(JobTitle.id == data.job_title_id).first()
+    if not job_title_exists:
         raise ValueError("Job title not found")
 
-    # 🔐 Create default password
     default_password = (data.first_name + data.last_name).lower() + "123"
     hashed_password = get_password_hash(default_password)
 
-    # 7️⃣ Create User (no commit yet)
     user = User(
         matricule=data.matricule,
         hashed_password=hashed_password,
@@ -51,8 +50,8 @@ def create_employee(db: Session, data: EmployeeCreate):
     )
 
     db.add(user)
-    db.flush()  
-    # 8️⃣ Create Employee
+    db.flush()
+
     employee = Employee(
         user_id=user.id,
         first_name=data.first_name,
@@ -70,113 +69,117 @@ def create_employee(db: Session, data: EmployeeCreate):
     db.commit()
     db.refresh(employee)
 
-    return employee
-#========
+    return (
+        db.query(Employee)
+        .options(*EMPLOYEE_LOAD_OPTIONS)
+        .filter(Employee.id == employee.id)
+        .first()
+    )
+
+
 def get_visible_employees(db: Session, current_user: User):
+    if current_user.role == UserRole.SUPERUSER:  # type: ignore
+        return db.query(Employee).options(*EMPLOYEE_LOAD_OPTIONS)
 
-    if current_user.role == UserRole.SUPERUSER: # type: ignore
-        return db.query(Employee)
-
-    current_employee = get_employee_by_user_id(db, current_user.id) # type: ignore
+    current_employee = get_employee_by_user_id(db, current_user.id)  # type: ignore
 
     job_title = current_employee.job_title
     scope = job_title.scope
     level = job_title.level
 
-    query = db.query(Employee).join(JobTitle)
-
+    query = db.query(Employee).options(*EMPLOYEE_LOAD_OPTIONS).join(JobTitle)
     query = query.filter(JobTitle.level < level)
 
     if scope == PositionScope.GLOBAL:
         return query
 
     if scope == PositionScope.DEPARTMENT:
-        query = query.filter(
-            Employee.department_id == current_employee.department_id
-        )
+        query = query.filter(Employee.department_id == current_employee.department_id)
 
     if scope == PositionScope.TEAM:
-        query = query.filter(
-            Employee.team_id == current_employee.team_id
-        )
+        query = query.filter(Employee.team_id == current_employee.team_id)
 
     if scope == PositionScope.NONE:
         query = query.filter(Employee.id == current_employee.id)
 
     return query
-#=========
+
+
 def list_employees(
     db: Session,
     current_user: User,
     department_id: int | None = None,
-    team_id: int | None = None
+    team_id: int | None = None,
 ):
-
     query = get_visible_employees(db, current_user)
 
     if department_id:
-        query = query.filter(Employee.department_id == department_id) # type: ignore
+        query = query.filter(Employee.department_id == department_id)  # type: ignore
 
     if team_id:
-        query = query.filter(Employee.team_id == team_id) # type: ignore
+        query = query.filter(Employee.team_id == team_id)  # type: ignore
 
-    return query.all() # type: ignore
-#=========
-def get_employee_by_id (db : Session ,employee_id : int, current_user : User):
-    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    return query.order_by(Employee.id).all()  # type: ignore
+
+
+def get_employee_by_id(db: Session, employee_id: int, current_user: User):
+    employee = (
+        get_visible_employees(db, current_user)
+        .filter(Employee.id == employee_id)
+        .first()
+    )
     if not employee:
         raise ValueError("Employee not found ")
-    visible_emplouiyees = get_visible_employees(db,current_user)
-    
-    if employee not in visible_emplouiyees : 
-        raise ValueError("You are not allowed to view this employee")
 
     return employee
-#=========
+
+
 def get_employee_by_user_id(db: Session, user_id: int):
-    employee = db.query(Employee).filter(Employee.user_id == user_id).first()
+    employee = (
+        db.query(Employee)
+        .options(*EMPLOYEE_LOAD_OPTIONS)
+        .filter(Employee.user_id == user_id)
+        .first()
+    )
     if not employee:
         raise ValueError("Employee profile not found")
     return employee
-#=========
+
+
 def update_employee(
     db: Session,
     employee_id: int,
     data: EmployeeUpdate,
 ):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
-
     if not employee:
         raise ValueError("Employee not found")
 
     update_data = data.model_dump(exclude_unset=True)
-
     for key, value in update_data.items():
         setattr(employee, key, value)
 
     db.commit()
     db.refresh(employee)
 
-    return employee
-#=========
+    return (
+        db.query(Employee)
+        .options(*EMPLOYEE_LOAD_OPTIONS)
+        .filter(Employee.id == employee.id)
+        .first()
+    )
+
+
 def delete_employee(db: Session, employee_id: int):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
-
     if not employee:
         raise ValueError("Employee not found")
 
     user = db.query(User).filter(User.id == employee.user_id).first()
 
     db.delete(employee)
-
     if user:
         db.delete(user)
 
     db.commit()
-
     return True
-#=========
-
-
-
-

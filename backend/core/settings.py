@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Smart GRH"
     DEBUG: bool = False
     DATABASE_URL: str
+    CREATE_TABLES_ON_STARTUP: bool = False
 
     SECRET_KEY: str
     ALGORITHM: str = "HS256"

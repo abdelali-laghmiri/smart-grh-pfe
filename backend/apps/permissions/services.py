@@ -10,20 +10,19 @@ def user_has_permission(
     user: User,
     permission_name: str
 ) -> bool:
-
-    employee = db.query(Employee).filter(
-        Employee.user_id == user.id
-    ).first()
-
-    if not employee:
-        return False
-
     permission = (
-        db.query(Permission)
-        .join(JobTitlePermission)
+        db.query(Permission.id)
+        .join(
+            JobTitlePermission,
+            JobTitlePermission.permission_id == Permission.id,
+        )
+        .join(
+            Employee,
+            Employee.job_title_id == JobTitlePermission.job_title_id,
+        )
         .filter(
-            JobTitlePermission.job_title_id == employee.job_title_id,
-            Permission.name == permission_name
+            Employee.user_id == user.id,
+            Permission.name == permission_name,
         )
         .first()
     )
