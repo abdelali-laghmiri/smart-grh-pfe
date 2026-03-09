@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 # =====================================================
@@ -26,5 +26,5 @@ class UserResponse(BaseModel):
     role : str
     is_active: bool
     created_at: datetime
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)

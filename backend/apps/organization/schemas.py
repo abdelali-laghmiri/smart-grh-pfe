@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 from apps.organization.models import PositionScope
@@ -31,8 +31,8 @@ class JobTitleResponse(JobTitleBase):
     id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DepartmentBase(BaseModel):
@@ -55,8 +55,8 @@ class DepartmentResponse(DepartmentBase):
     id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TeamBase(BaseModel):
@@ -78,5 +78,5 @@ class TeamResponse(TeamBase):
 
     id: int
 
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)

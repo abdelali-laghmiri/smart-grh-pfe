@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import date
 
 from apps.employees.models import EmploymentStatus
@@ -39,8 +39,8 @@ class EmployeeResponse(BaseModel):
     current_leave_balance: int
     employment_status: EmploymentStatus
 
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmployeeListResponse(BaseModel):
@@ -54,8 +54,8 @@ class EmployeeListResponse(BaseModel):
     job_title_id: int
     employment_status: EmploymentStatus
 
-    class Config:
-        from_attributes = True
+    # Use Pydantic v2 ORM serialization config.
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmployeeUpdate(BaseModel):
