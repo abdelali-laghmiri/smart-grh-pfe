@@ -1,11 +1,13 @@
-from pydantic import BaseModel
-from typing import Optional, List, Dict
 from datetime import datetime
 from enum import Enum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict
 
 # =====================================================
 # Request Schemas
-# Pydantic models for request and approval payloads.
+# Pydantic models for request types, workflow steps,
+# employee requests, and approval actions.
 # =====================================================
 
 
@@ -25,20 +27,75 @@ class ApprovalStatus(str, Enum):
     REJECTED = "REJECTED"
 
 
-# =========================
-# REQUEST CREATE
-# =========================
+# =====================================================
+# Request Type Schemas
+# Defines payloads for request type configuration.
+# =====================================================
+
+
+class RequestTypeBase(BaseModel):
+    """Shared fields used by request type payloads."""
+
+    name: str
+    description: str | None = None
+
+
+class RequestTypeCreate(RequestTypeBase):
+    """Payload used to create a new request type."""
+
+    pass
+
+
+class RequestTypeResponse(RequestTypeBase):
+    """Serialized representation of a request type."""
+
+    id: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# =====================================================
+# Approval Step Schemas
+# Defines payloads for workflow step configuration.
+# =====================================================
+
+
+class ApprovalStepBase(BaseModel):
+    """Shared fields used by approval step payloads."""
+
+    request_type_id: int
+    step_order: int
+    job_title_id: int
+
+
+class ApprovalStepCreate(ApprovalStepBase):
+    """Payload used to create a workflow approval step."""
+
+    pass
+
+
+class ApprovalStepResponse(ApprovalStepBase):
+    """Serialized representation of a workflow approval step."""
+
+    id: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# =====================================================
+# Request Schemas
+# Defines payloads for employee request creation and reads.
+# =====================================================
+
 
 class RequestCreate(BaseModel):
     """Payload used when an employee creates a request."""
 
     request_type_id: int
-    extra_data: Optional[Dict] = None
+    extra_data: dict[str, Any] | None = None
 
-
-# =========================
-# REQUEST RESPONSE
-# =========================
 
 class RequestResponse(BaseModel):
     """Serialized representation of a request."""
@@ -47,17 +104,18 @@ class RequestResponse(BaseModel):
     employee_id: int
     request_type_id: int
     status: RequestStatus
-    current_step: int
-    extra_data: Optional[Dict]
+    current_step: int | None
+    extra_data: dict[str, Any] | None
     created_at: datetime
 
-    class Config:
-        from_attributes  = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-# =========================
-# APPROVAL RESPONSE
-# =========================
+# =====================================================
+# Approval Schemas
+# Defines payloads for approval inbox responses and actions.
+# =====================================================
+
 
 class ApprovalResponse(BaseModel):
     """Serialized representation of a generated approval step."""
@@ -67,19 +125,18 @@ class ApprovalResponse(BaseModel):
     approver_user_id: int
     step_order: int
     status: ApprovalStatus
+    approved_at: datetime | None = None
 
-    class Config:
-        from_attributes  = True
+    model_config = ConfigDict(from_attributes=True)
 
-
-# =========================
-# APPROVE / REJECT
-# =========================
 
 class ApprovalAction(BaseModel):
     """Optional payload sent when approving or rejecting a request."""
 
-    comment: Optional[str] = None
+    comment: str | None = None
 
 
+class ActionResponse(BaseModel):
+    """Simple response payload returned by workflow actions."""
 
+    message: str
