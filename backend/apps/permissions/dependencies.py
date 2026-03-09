@@ -10,11 +10,13 @@ from apps.permissions.services import user_has_permission
 
 
 def require_permission(permission_name: str):
+    """Build a dependency that checks whether the current user has a permission."""
 
     def checker(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
     ):
+        """Validate access for the requested permission name."""
 
         if current_user.role == UserRole.SUPERUSER: # type: ignore 
             return current_user

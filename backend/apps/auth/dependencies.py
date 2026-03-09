@@ -15,6 +15,7 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
+    """Resolve the authenticated user from the bearer token."""
     payload = verify_access_token(token)
 
     if payload is None:
@@ -42,6 +43,7 @@ def get_current_user(
     return user
 
 def require_active_user(current_user = Depends(get_current_user)):
+    """Allow access only to active user accounts."""
     if not current_user.is_active : 
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -50,6 +52,7 @@ def require_active_user(current_user = Depends(get_current_user)):
     return current_user
 
 def require_superuser(current_user = Depends(require_active_user)):
+    """Allow access only to active superusers."""
     if current_user.role != UserRole.SUPERUSER:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

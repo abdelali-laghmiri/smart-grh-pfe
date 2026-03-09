@@ -8,6 +8,11 @@ from alembic import context
 import sys
 from pathlib import Path
 
+# =====================================================
+# Alembic Environment
+# Loads project settings and model metadata for migrations.
+# =====================================================
+
 # add the parent directory of the current file to the Python path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 

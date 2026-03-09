@@ -2,6 +2,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    """Central application settings loaded from environment variables."""
+
     APP_NAME: str = "Smart GRH"
     DEBUG: bool = False
     DATABASE_URL: str
@@ -13,4 +15,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+
 settings = Settings()

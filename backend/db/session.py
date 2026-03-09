@@ -2,6 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from core.settings import settings
 
+# =====================================================
+# Database Session
+# Provides the SQLAlchemy engine and per-request sessions.
+# =====================================================
+
 DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(
@@ -13,6 +18,7 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
+    """Yield a database session and guarantee cleanup after request handling."""
     db = SessionLocal()
     try:
         yield db

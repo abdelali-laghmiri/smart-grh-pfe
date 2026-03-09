@@ -6,13 +6,22 @@ from apps.organization.models import Department, Team, JobTitle
 from apps.auth.models import User
 from enum import Enum as PyEnum
 
+# =====================================================
+# Employee Models
+# Stores the HR profile linked to each authenticated user.
+# =====================================================
+
 
 class EmploymentStatus(str, PyEnum):
+    """Lifecycle status of an employee in the company."""
+
     ACTIVE = "ACTIVE"
     SUSPENDED = "SUSPENDED"
     TERMINATED = "TERMINATED"
 
 class Employee(Base):
+    """Employee profile linked to organizational assignments and a user account."""
+
     __tablename__ = "employees"
 
     id = Column(Integer, primary_key=True, index=True)

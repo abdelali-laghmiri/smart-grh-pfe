@@ -22,6 +22,11 @@ from db.session import get_db
 
 router = APIRouter(prefix="/employees", tags=["Employees"])
 
+# =====================================================
+# Employee Router
+# Exposes CRUD-style endpoints for employee profiles.
+# =====================================================
+
 
 @router.post("/", response_model=EmployeeResponse)
 def create_employee_endpoint(
@@ -29,6 +34,7 @@ def create_employee_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("employees.create")),
 ):
+    """Create a new employee profile and linked user account."""
     try:
         employee = create_employee(db, data)
         return employee
@@ -43,6 +49,7 @@ def list_employees_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    """List employees visible to the authenticated user."""
     employees = list_employees(db, current_user, department_id, team_id)
     return employees
 
@@ -53,6 +60,7 @@ def get_employee_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    """Return a single employee visible to the authenticated user."""
     try:
         employee = get_employee_by_id(db, employee_id, current_user)
         return employee
@@ -67,6 +75,7 @@ def update_employee_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("employees.update")),
 ):
+    """Update an employee profile."""
     try:
         employee = update_employee(db, employee_id, data)
         return employee
@@ -80,6 +89,7 @@ def delete_employee_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("employees.delete")),
 ):
+    """Delete an employee profile and its linked user account."""
     try:
         delete_employee(db, employee_id)
         return {"message": "Employee deleted successfully"}
@@ -92,6 +102,7 @@ def my_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    """Return the employee profile of the authenticated user."""
     from apps.employees.services import get_employee_by_user_id
 
     return get_employee_by_user_id(db, current_user.id)  # type: ignore

@@ -4,8 +4,14 @@ from apps.auth.models import User
 from apps.organization.models import Department, JobTitle, Team
 from apps.organization.schemas import JobTitleCreate
 
+# =====================================================
+# Organization Services
+# Business rules for job titles, departments, and teams.
+# =====================================================
+
 
 def create_job_title(db: Session, data: JobTitleCreate) -> JobTitle:
+    """Create a job title after validating uniqueness and hierarchy level."""
     existing = db.query(JobTitle.id).filter(JobTitle.title == data.title).first()
     if existing:
         raise ValueError("Job title already exists")
@@ -26,6 +32,7 @@ def create_job_title(db: Session, data: JobTitleCreate) -> JobTitle:
 
 
 def delete_job_title(db: Session, job_title_id: int):
+    """Delete a job title by its identifier."""
     job_title = db.query(JobTitle).filter(JobTitle.id == job_title_id).first()
     if not job_title:
         raise ValueError("Job title not found")
@@ -36,6 +43,7 @@ def delete_job_title(db: Session, job_title_id: int):
 
 
 def create_department(db: Session, name: str, description: str | None, manager_id: int | None):
+    """Create a department and optionally assign a manager."""
     existing = db.query(Department.id).filter(Department.name == name).first()
     if existing:
         raise ValueError("Department already exists")
@@ -58,6 +66,7 @@ def create_department(db: Session, name: str, description: str | None, manager_i
 
 
 def list_departments(db: Session):
+    """List departments with manager and team relationships preloaded."""
     return (
         db.query(Department)
         .options(
@@ -70,6 +79,7 @@ def list_departments(db: Session):
 
 
 def delete_department(db: Session, department_id: int):
+    """Delete a department only when it no longer contains teams."""
     department = db.query(Department).filter(Department.id == department_id).first()
     if not department:
         raise ValueError("Department not found")
@@ -89,6 +99,7 @@ def create_team(
     department_id: int,
     team_leader_id: int | None,
 ):
+    """Create a team inside a department with an optional leader."""
     department_exists = db.query(Department.id).filter(Department.id == department_id).first()
     if not department_exists:
         raise ValueError("Department not found")
@@ -119,6 +130,7 @@ def create_team(
 
 
 def list_teams(db: Session):
+    """List teams together with their department and team leader."""
     return (
         db.query(Team)
         .options(
@@ -131,6 +143,7 @@ def list_teams(db: Session):
 
 
 def delete_team(db: Session, team_id: int):
+    """Delete a team by its identifier."""
     team = db.query(Team).filter(Team.id == team_id).first()
     if not team:
         raise ValueError("Team not found")
@@ -141,6 +154,7 @@ def delete_team(db: Session, team_id: int):
 
 
 def get_teams_by_department(db: Session, department_id: int):
+    """Return the teams that belong to the specified department."""
     department_exists = db.query(Department.id).filter(Department.id == department_id).first()
     if not department_exists:
         raise ValueError("Department not found")

@@ -20,6 +20,7 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
+    """Authenticate a user and issue a JWT access token."""
     user = authenticate_user(db, form_data.username, form_data.password)
 
     if not user:
@@ -39,8 +40,10 @@ def login(
 
 @router.get("/me",response_model=UserResponse)
 def get_me(current_user = Depends(get_current_user)):
+    """Return the currently authenticated user."""
     return current_user
 
 @router.get("/admin_only")
 def admin_only(user = Depends(require_superuser)):
+    """Example endpoint protected by the superuser dependency."""
     return{"message":"welcomsuper user"}

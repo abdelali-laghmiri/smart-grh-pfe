@@ -10,6 +10,7 @@ from apps.permissions.permissions_list import PERMISSIONS
 
 
 def seed_permissions(db: Session):
+    """Insert predefined permissions that are missing from the database."""
 
     for perm_name in PERMISSIONS:
 
@@ -29,6 +30,7 @@ def seed_permissions(db: Session):
 
 
 def run():
+    """Open a session and execute the permissions seed routine."""
 
     db = SessionLocal()
 

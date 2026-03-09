@@ -6,13 +6,22 @@ import enum
 from apps.auth.models import User
 from db.base import Base
 
+# =====================================================
+# Organization Models
+# Represents the company structure and reporting scopes.
+# =====================================================
+
 class PositionScope(str,enum.Enum):
+    """Defines how far a job title's authority or visibility applies."""
+
     NONE = "NONE"
     TEAM = "TEAM"
     DEPARTMENT = "DEPARTMENT"
     GLOBAL = "GLOBAL"
 
 class JobTitle(Base):
+    """Catalog entry for employee job titles and their approval scope."""
+
     __tablename__ = "job_titles"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -27,6 +36,8 @@ class JobTitle(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Department(Base):
+    """Top-level organizational unit that groups multiple teams."""
+
     __tablename__ = "departments"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -45,6 +56,8 @@ class Department(Base):
     teams = relationship("Team", back_populates="department", cascade="all, delete")
 
 class Team(Base):
+    """Subdivision of a department with an optional team leader."""
+
     __tablename__  = "teams"
     id = Column(Integer,primary_key=True,index=True)
     name = Column(String,nullable=False)

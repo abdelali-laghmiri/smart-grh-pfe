@@ -5,18 +5,27 @@ import enum
 
 from db.base import Base
 
+# =====================================================
+# Request Workflow Models
+# Stores request definitions, workflow steps, and approvals.
+# =====================================================
+
 
 # =========================
 # ENUMS
 # =========================
 
 class RequestStatus(str, enum.Enum):
+    """Overall lifecycle state of a request."""
+
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
 
 
 class ApprovalStatus(str, enum.Enum):
+    """Status of an individual approval step."""
+
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
@@ -27,6 +36,8 @@ class ApprovalStatus(str, enum.Enum):
 # =========================
 
 class RequestType(Base):
+    """Request category that owns an approval workflow definition."""
+
     __tablename__ = "request_types"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -51,6 +62,8 @@ class RequestType(Base):
 # =========================
 
 class ApprovalStep(Base):
+    """Single workflow step tied to the job title that must approve it."""
+
     __tablename__ = "approval_steps"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -80,6 +93,8 @@ class ApprovalStep(Base):
 # =========================
 
 class Request(Base):
+    """Employee request instance that moves through the approval workflow."""
+
     __tablename__ = "requests"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -116,6 +131,8 @@ class Request(Base):
 # =========================
 
 class RequestApproval(Base):
+    """Approval record generated for a specific request workflow step."""
+
     __tablename__ = "request_approvals"
 
     id = Column(Integer, primary_key=True, index=True)

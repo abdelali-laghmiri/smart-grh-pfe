@@ -3,8 +3,15 @@ from sqlalchemy.orm import relationship
 
 from db.base import Base
 
+# =====================================================
+# Permission Models
+# Maps job titles to reusable permission entries.
+# =====================================================
+
 
 class Permission(Base):
+    """Named permission that can be assigned to job titles."""
+
     __tablename__ = "permissions"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -13,6 +20,8 @@ class Permission(Base):
 
 
 class JobTitlePermission(Base):
+    """Association between a job title and a permission."""
+
     __tablename__ = "job_title_permissions"
 
     id = Column(Integer, primary_key=True)

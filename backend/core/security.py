@@ -6,6 +6,7 @@ from core.settings import settings
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    """Generate a signed JWT access token for the provided payload."""
     to_encode = data.copy()
 
     if expires_delta:
@@ -27,6 +28,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 def verify_access_token(token: str)-> Optional[Dict[str, Any]]:
+    """Decode a JWT token and return its payload when valid."""
     try:
         payload = jwt.decode(
             token,
