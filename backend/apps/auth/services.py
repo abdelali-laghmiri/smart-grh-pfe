@@ -25,9 +25,9 @@ def create_user(
         ):
     
     if role == UserRole.SUPERUSER:
-        if get_users_by_role(db, UserRole.SUPERUSER):
+        if db.query(User.id).filter(User.role == UserRole.SUPERUSER).first():
             raise ValueError("A superuser already exists.")
-    if db.query(User).filter(User.matricule == matricule).first():
+    if db.query(User.id).filter(User.matricule == matricule).first():
         raise ValueError("A user with this matricule already exists.")
     hashed_password = get_password_hash(password)
     db_user = User(
