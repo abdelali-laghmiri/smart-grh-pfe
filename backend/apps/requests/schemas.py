@@ -4,10 +4,12 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
+from apps.requests.models import RequestFieldType
+
 # =====================================================
 # Request Schemas
-# Pydantic models for request types, workflow steps,
-# employee requests, and approval actions.
+# Pydantic models for request types, dynamic form fields,
+# workflow steps, employee requests, and approval actions.
 # =====================================================
 
 
@@ -53,6 +55,82 @@ class RequestTypeResponse(RequestTypeBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# =====================================================
+# Request Type Field Schemas
+# Defines payloads for dynamic form field configuration.
+# =====================================================
+
+
+class RequestTypeFieldBase(BaseModel):
+    """Shared fields used by request type field payloads."""
+
+    name: str
+    label: str
+    field_type: RequestFieldType
+    is_required: bool = False
+    placeholder: str | None = None
+    options: list[Any] | None = None
+    field_order: int
+    default_value: Any | None = None
+    is_active: bool = True
+
+
+class RequestTypeFieldCreate(RequestTypeFieldBase):
+    """Payload used to create a dynamic field for a request type."""
+
+    pass
+
+
+class RequestTypeFieldUpdate(BaseModel):
+    """Payload used to partially update a request type field."""
+
+    name: str | None = None
+    label: str | None = None
+    field_type: RequestFieldType | None = None
+    is_required: bool | None = None
+    placeholder: str | None = None
+    options: list[Any] | None = None
+    field_order: int | None = None
+    default_value: Any | None = None
+    is_active: bool | None = None
+
+
+class RequestTypeFieldResponse(RequestTypeFieldBase):
+    """Serialized representation of a request type field."""
+
+    id: int
+    request_type_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# =====================================================
+# Form Schema Schemas
+# Defines payloads used by the frontend to build forms.
+# =====================================================
+
+
+class RequestTypeFormFieldResponse(BaseModel):
+    """Serialized field definition returned by the form schema endpoint."""
+
+    name: str
+    label: str
+    field_type: RequestFieldType
+    is_required: bool
+    placeholder: str | None = None
+    options: list[Any] | None = None
+    order: int
+    default_value: Any | None = None
+
+
+class RequestTypeFormResponse(BaseModel):
+    """Serialized form schema for a request type."""
+
+    request_type_id: int
+    request_type_name: str
+    fields: list[RequestTypeFormFieldResponse]
 
 
 # =====================================================

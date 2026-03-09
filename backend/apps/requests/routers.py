@@ -10,8 +10,8 @@ from . import services
 
 # =====================================================
 # Request Router
-# Exposes endpoints for request types, workflow steps,
-# employee requests, and approval actions.
+# Exposes endpoints for request types, dynamic fields,
+# form schemas, workflow steps, requests, and approvals.
 # =====================================================
 
 
@@ -56,6 +56,122 @@ def list_request_types_endpoint(
     """List all available request types."""
 
     return services.list_request_types(db)
+
+
+# =====================================================
+# Request Type Field Routes
+# Handles dynamic form fields configuration.
+# =====================================================
+
+
+@router.post("/types/{type_id}/fields", response_model=schemas.RequestTypeFieldResponse)
+def create_request_type_field_endpoint(
+    type_id: int,
+    data: schemas.RequestTypeFieldCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_superuser),
+):
+    """Create a dynamic field for a request type. Restricted to superusers."""
+
+    try:
+        return services.create_request_type_field(
+            db,
+            request_type_id=type_id,
+            name=data.name,
+            label=data.label,
+            field_type=data.field_type,
+            is_required=data.is_required,
+            placeholder=data.placeholder,
+            options=data.options,
+            field_order=data.field_order,
+            default_value=data.default_value,
+            is_active=data.is_active,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+
+@router.get("/types/{type_id}/fields", response_model=list[schemas.RequestTypeFieldResponse])
+def list_request_type_fields_endpoint(
+    type_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_active_user),
+):
+    """Return configured fields for a request type ordered by field order."""
+
+    try:
+        return services.list_request_type_fields(db, type_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+
+@router.put("/fields/{field_id}", response_model=schemas.RequestTypeFieldResponse)
+def update_request_type_field_endpoint(
+    field_id: int,
+    data: schemas.RequestTypeFieldUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_superuser),
+):
+    """Update a dynamic request type field. Restricted to superusers."""
+
+    try:
+        return services.update_request_type_field(
+            db,
+            field_id,
+            data.model_dump(exclude_unset=True),
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+
+@router.delete("/fields/{field_id}", response_model=schemas.ActionResponse)
+def delete_request_type_field_endpoint(
+    field_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_superuser),
+):
+    """Delete a dynamic request type field. Restricted to superusers."""
+
+    try:
+        services.delete_request_type_field(db, field_id)
+        return {"message": "Request type field deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+
+# =====================================================
+# Form Schema Routes
+# Returns the frontend-ready form schema for request types.
+# =====================================================
+
+
+@router.get("/types/{type_id}/form", response_model=schemas.RequestTypeFormResponse)
+def get_request_type_form_endpoint(
+    type_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_active_user),
+):
+    """Return the active form schema for the given request type."""
+
+    try:
+        return services.get_request_type_form(db, type_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
 
 
 # =====================================================
@@ -146,7 +262,7 @@ def get_my_approvals_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Return pending approval steps assigned to the authenticated user."""
+    """Return pending approval steps currently assigned to the user."""
 
     return services.get_my_approvals(db, current_user)
 
