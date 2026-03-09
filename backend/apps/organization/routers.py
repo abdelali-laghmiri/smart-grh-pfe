@@ -28,6 +28,11 @@ from apps.auth.dependencies import require_superuser, require_active_user
 
 router = APIRouter(prefix="/organization", tags=["Organization"])
 
+# =====================================================
+# Organization Router
+# Exposes endpoints for job titles, departments, and teams.
+# =====================================================
+
   
 #=================== job-titles routers ==================================#
 @router.post("/job-titels",response_model=JobTitleResponse)
@@ -36,6 +41,7 @@ def create_job_title_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Create a job title. Restricted to superusers."""
     try:
         job_title = create_job_title(db, data)
         return job_title
@@ -50,6 +56,7 @@ def list_job_titles(
     db: Session = Depends(get_db),
     current_user = Depends(require_active_user),
 ):
+    """List all available job titles."""
     return db.query(JobTitle).all()
 @router.delete("/job-titles/{job_title_id}")
 def delete_job_title_endpoint(
@@ -57,6 +64,7 @@ def delete_job_title_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Delete a job title. Restricted to superusers."""
     try:
         delete_job_title(db, job_title_id)
         return {"message": "Job title deleted successfully"}
@@ -75,6 +83,7 @@ def create_department_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Create a department. Restricted to superusers."""
     try:
         return create_department(
             db,
@@ -92,6 +101,7 @@ def list_departments_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_active_user),
 ):
+    """List departments with their related structure."""
     return list_departments(db)
 @router.delete("/departments/{department_id}")
 def delete_department_endpoint(
@@ -99,6 +109,7 @@ def delete_department_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Delete a department. Restricted to superusers."""
     try:
         delete_department(db, department_id)
         return {"message": "Department deleted successfully"}
@@ -112,6 +123,7 @@ def create_team_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Create a team. Restricted to superusers."""
     try:
         return create_team(
             db,
@@ -126,6 +138,7 @@ def list_teams_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_active_user),
 ):
+    """List all teams."""
     return list_teams(db)
 @router.delete("/teams/{team_id}")
 def delete_team_endpoint(
@@ -133,6 +146,7 @@ def delete_team_endpoint(
     db: Session = Depends(get_db),
     current_user = Depends(require_superuser),
 ):
+    """Delete a team. Restricted to superusers."""
     try:
         delete_team(db, team_id)
         return {"message": "Team deleted successfully"}
@@ -145,6 +159,7 @@ def get_department_teams(
     db: Session = Depends(get_db),
     current_user = Depends(require_active_user),
 ):
+    """List teams that belong to the specified department."""
     try:
         return get_teams_by_department(db, department_id)
     except ValueError as e:
