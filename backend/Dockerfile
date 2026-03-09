@@ -1,24 +1,24 @@
 FROM python:3.11-slim
 
-# Keep Python logs unbuffered and avoid unnecessary bytecode files.
+# Prevent Python from creating .pyc files and enable real-time logs
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Run the application from a dedicated working directory.
-WORKDIR /backend
+# Create working directory inside the container
+WORKDIR /app
 
-# Copy dependency definitions first to leverage Docker layer caching.
-COPY backend/requirements.txt ./requirements.txt
+# Copy requirements first (better Docker caching)
+COPY requirements.txt .
 
-# Install backend dependencies required to run FastAPI in production.
+# Install dependencies
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy only the FastAPI backend source into the container.
-COPY backend/ .
+# Copy the rest of the backend code
+COPY . .
 
-# Expose the FastAPI application port.
+# Expose FastAPI port
 EXPOSE 8000
 
-# Start the API server in production mode.
+# Run the FastAPI application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
