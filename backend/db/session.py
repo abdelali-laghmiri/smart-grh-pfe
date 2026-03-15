@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from core.settings import settings
+from db import init_db  # noqa: F401
 
 # =====================================================
 # Database Session
